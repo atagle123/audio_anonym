@@ -134,6 +134,7 @@ class AudioService:
                 sample_rate=self.sample_rate,
                 commit_strategy=CommitStrategy.VAD,
                 include_timestamps=True,
+                vad_silence_threshold_secs=0.8,  # Balanced threshold for better accuracy while maintaining responsiveness
             )
         )
 
@@ -433,6 +434,8 @@ class AudioService:
         if not keyword_filter.filter(transcript):
             return
 
+        print(f"[FILTERED] Filtered transcript: {transcript}")
+
         ranges = self._extract_flagged_ranges(data)
         if ranges:
             for start_sample, end_sample in ranges:
@@ -588,12 +591,21 @@ class AudioService:
         return start_sample, end_sample
 
     def _handle_partial(self, data: Dict[str, Any]) -> None:
+        transcript = data.get("transcript") or data.get("text")
+        if transcript:
+            print(f"[PARTIAL] Transcribed text: {transcript}")
         self._process_transcript_event(data)
 
     def _handle_committed(self, data: Dict[str, Any]) -> None:
+        transcript = data.get("transcript") or data.get("text")
+        if transcript:
+            print(f"[COMMITTED] Transcribed text: {transcript}")
         self._process_transcript_event(data)
 
     def _handle_committed_with_timestamps(self, data: Dict[str, Any]) -> None:
+        transcript = data.get("transcript") or data.get("text")
+        if transcript:
+            print(f"[COMMITTED WITH TIMESTAMPS] Transcribed text: {transcript}")
         self._process_transcript_event(data)
 
     def _handle_error(self, data: Dict) -> None:
