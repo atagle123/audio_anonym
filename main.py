@@ -4,9 +4,9 @@ import argparse
 import asyncio
 import contextlib
 import sys
+import wave
 from pathlib import Path
 from typing import Iterable, List, Sequence, Tuple
-import wave
 
 import numpy as np
 
@@ -15,8 +15,8 @@ SRC_DIR = PROJECT_ROOT / "src"
 if SRC_DIR.is_dir() and str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from utils import encode_audio, _default_delay_seconds  # type: ignore  # noqa: E402
 from audio.service import AudioService  # type: ignore  # noqa: E402
+from utils import _default_delay_seconds, encode_audio  # type: ignore  # noqa: E402
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -121,7 +121,9 @@ def read_wav_mono_pcm16(path: Path) -> Tuple[int, np.ndarray]:
         sample_rate = wav_file.getframerate()
         frames = wav_file.readframes(wav_file.getnframes())
 
-    samples = np.frombuffer(frames, dtype="<i2").astype(np.float32) / np.iinfo(np.int16).max
+    samples = (
+        np.frombuffer(frames, dtype="<i2").astype(np.float32) / np.iinfo(np.int16).max
+    )
     return sample_rate, samples
 
 
