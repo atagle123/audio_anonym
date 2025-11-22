@@ -30,7 +30,6 @@ if not API_KEY:
 VOICE_ID = "pNInz6obpgDQGcFmaJgB"  # Adam pre-made voice
 MODEL_ID = "eleven_multilingual_v2"
 PCM_SAMPLE_RATE = 16_000
-counter = 0
 
 client = ElevenLabs(api_key=API_KEY)
 
@@ -103,27 +102,15 @@ async def stream_into_realtime(text: str) -> str:
 
 def filter_transcript(text: str) -> str | None:
     """
-    Anonymizes text after the keyword 'clave' is detected.
-
-    Behavior:
-    - On detecting 'clave', anonymize immediately and activate counter.
-    - While counter > 0, anonymize everything.
-    - Counter decreases each received transcript chunk.
+    Replace the keyword 'clave' with 'zzzz', case-insensitively.
     """
 
-    global counter
     lowered = text.lower().strip()
-
-    # --- 1. If counter is active -> anonymize everything ---
-    if counter > 0:
-        counter -= 1
-        cleaned = re.sub(r"\w+", "zzz", text)
-        return cleaned
 
     # --- 2. Detect trigger word ---
     if "clave" in lowered:
-        counter = 10  # activate anonymization mode
-        cleaned = re.sub(r"\w+", "zzz", text)
+        # Replace only the trigger word, keeping surrounding text intact.
+        cleaned = re.sub(r"\bclave\b", "zzzz", text, flags=re.IGNORECASE)
         return cleaned
 
     # --- 3. Normal case (no anonymization) ---
@@ -142,7 +129,7 @@ def synthesize_and_play(text: str) -> None:
 
 
 async def service():  # TODO en teoria entra un audio
-    seed_text = "Te comparto mi clave es 1234."
+    seed_text = "Te comparto mi clave."
     print(f"Seed text: {seed_text}")
 
     transcript = await stream_into_realtime(seed_text)
