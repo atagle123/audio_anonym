@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import asyncio
+import io
 import sys
+import wave
 from pathlib import Path
 from typing import Iterable, List
 
+from elevenlabs.play import play
 from fastapi.testclient import TestClient
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -42,7 +45,9 @@ def _chunk_bytes(payload: bytes, chunk_size: int) -> Iterable[bytes]:
         yield payload[start : start + chunk_size]
 
 
-def test_audio_filter_websocket(audio_payload: bytes, chunk_size: int = 3200 * 2) -> List[bytes]:
+def test_audio_filter_websocket(
+    audio_payload: bytes, chunk_size: int = 3200 * 2
+) -> List[bytes]:
     """
     Stream synthesized audio through the /ws/audio_filter websocket and collect responses.
     """
@@ -68,10 +73,19 @@ def test_audio_flag_websocket(iterations: int = 5) -> List[dict]:
     return responses
 
 
+def pcm16_to_wav_bytes(payload: bytes, sample_rate: int = 16_000) -> bytes:
+    """Wrap raw PCM16 mono samples into a WAV container so ElevenLabs.play can handle it."""
+    buffer = io.BytesIO()
+    with wave.open(buffer, "wb") as wav_file:
+        wav_file.setnchannels(1)
+        wav_file.setsampwidth(2)
+        wav_file.setframerate(sample_rate)
+        wav_file.writeframes(payload)
+    return buffer.getvalue()
+
+
 async def main() -> None:
-    synthesized = await create_text_to_audio(
-        "Esta es una prueba de anonimización para el cortafuegos de audio."
-    )
+    synthesized = await create_text_to_audio("Esta es una prueba clave para test.")
 
     processed_chunks = await asyncio.to_thread(test_audio_filter_websocket, synthesized)
     flag_results = await asyncio.to_thread(test_audio_flag_websocket, 5)
@@ -86,6 +100,8 @@ async def main() -> None:
     if processed_chunks:
         decoded = decode_audio(processed_chunks[0])
         print(f"First chunk decoded sample count: {decoded.size}")
+        wav_payload = pcm16_to_wav_bytes(b"".join(processed_chunks))
+        play(wav_payload)
 
     print("Flag websocket responses:")
     for index, payload in enumerate(flag_results, start=1):

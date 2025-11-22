@@ -14,7 +14,7 @@ RUN apt-get update \
 # Copy project files
 COPY pyproject.toml README.md uv.lock* ./
 COPY .env .env
-COPY src ./src
+COPY backend ./backend
 COPY main.py ./main.py
 
 # Install the application and runtime dependencies
