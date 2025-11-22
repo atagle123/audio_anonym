@@ -1,16 +1,53 @@
-# Byte-compiled / optimized / DLL files
+# -----------------------------
+# General OS / Editor artefacts
+# -----------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# -----------------------------
+# Logs & debug output
+# -----------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# -----------------------------
+# Environment & secrets
+# -----------------------------
+.env
+.env.*
+!.env.example
+.envrc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# -----------------------------
+# Python artefacts
+# -----------------------------
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
+.python-version
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+__pydantic_cache__/
 
-# Distribution / packaging
+# Packaging / build directories
 .Python
 build/
-develop-eggs/
 dist/
+develop-eggs/
 downloads/
 eggs/
 .eggs/
@@ -28,17 +65,14 @@ MANIFEST
 *.manifest
 *.spec
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
+# Coverage / test output
 .coverage
 .coverage.*
 .cache
+coverage/
+htmlcov/
+.tox/
+.nox/
 nosetests.xml
 coverage.xml
 *.cover
@@ -46,39 +80,63 @@ coverage.xml
 .hypothesis/
 
 # Virtual environments
-venv/
-ENV/
 env/
-.env/
-.envs/
+venv/
 .venv/
-*.env
+ENV/
+.envs/
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Jupyter Notebook
+# Jupyter
 .ipynb_checkpoints
 
-# pyenv
-.python-version
+# -----------------------------
+# Node / Frontend artefacts
+# -----------------------------
+node_modules/
+.pnp/
+.pnp.js
+.parcel-cache/
 
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
+# Common frontend build dirs
+*-cache/
+.next/
+.nuxt/
+.svelte-kit/
+.vercel/
+public/build/
 
-# Pyre type checker
-.pyre/
+# -----------------------------
+# Backend-specific ignores
+# -----------------------------
+backend/.venv/
+backend/env/
+backend/venv/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.ruff_cache/
+backend/.coverage
+backend/.coverage.*
+backend/coverage/
+backend/htmlcov/
+backend/.env
+backend/.env.*
 
-# VSCode
-.vscode/
-
-# JetBrains
-.idea/
-
-# macOS
-.DS_Store
-
-# Logs
-*.log
-
-# FastAPI / API generated
-__pydantic_cache__/
+# -----------------------------
+# Frontend-specific ignores
+# -----------------------------
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/coverage/
+frontend/.coverage
+frontend/.coverage.*
+frontend/.next/
+frontend/.nuxt/
+frontend/.svelte-kit/
+frontend/.parcel-cache/
+frontend/.vercel/
+frontend/.env
+frontend/.env.*
+frontend/.eslintcache
