@@ -52,7 +52,8 @@ def _float32_to_pcm16(samples: np.ndarray) -> bytes:
         return b""
     clipped = np.clip(samples, -1.0, 1.0)
     pcm = (clipped * np.iinfo(np.int16).max).astype(np.int16)
-    return pcm.tobytes()
+    # Ensure little-endian byte order for PCM16
+    return pcm.astype("<i2").tobytes()
 
 
 def _get_client() -> ElevenLabs:

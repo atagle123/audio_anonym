@@ -33,7 +33,8 @@ def encode_audio(samples: np.ndarray) -> bytes:
         return b""
     clipped = np.clip(samples, -1.0, 1.0)
     pcm = (clipped * _INT16_MAX).astype(np.int16)
-    return pcm.tobytes()
+    # Ensure little-endian byte order for PCM16
+    return pcm.astype("<i2").tobytes()
 
 
 async def process_audio_chunk(chunk: np.ndarray) -> np.ndarray:
