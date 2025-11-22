@@ -11,8 +11,8 @@ from typing import Iterable, List, Sequence, Tuple
 import numpy as np
 
 PROJECT_ROOT = Path(__file__).resolve().parent
-SRC_DIR = PROJECT_ROOT / "src"
-if SRC_DIR.is_dir() and str(SRC_DIR) not in sys.path:
+SRC_DIR = PROJECT_ROOT  # Changed: api.py is already in src/, so no need to add /src
+if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
 from audio.service import AudioService  # type: ignore  # noqa: E402
